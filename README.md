@@ -4,250 +4,165 @@
 
 [![Python](https://img.shields.io/badge/Python-3.14%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-pytest-informational.svg)](#testing)
+[![PyPI](https://img.shields.io/pypi/v/cybora.svg)](https://pypi.org/project/cybora/)
 [![Security](https://img.shields.io/badge/security-defensive%20by%20design-orange.svg)](#authorized-use)
 [![Status](https://img.shields.io/badge/status-foundation%20release-yellow.svg)](#roadmap)
 
-**Cybora** is a free, modular cybersecurity assessment platform designed to make security assessment useful to everyone—from a student checking a website to a developer reviewing a repository and a security team building an organization-wide assessment workflow.
+**Cybora** is a free, modular cybersecurity assessment platform designed to bring multiple defensive security checks into one command-line interface (CLI).
 
-It combines multiple defensive assessment modules behind one CLI and one normalized finding model.
+It is designed for students, developers, and security teams who want to assess websites, review repositories, inspect dependency files, and examine local system and network exposure.
 
-> **Important:** This repository is an early foundation release. It is intentionally honest about what is implemented now versus what belongs on the roadmap. It does not claim to replace mature enterprise security products.
+Cybora uses a unified finding format to help organize assessment results in one place.
+
+> **Note:** Cybora `0.1.0` is an early foundation release. Features should be considered implemented only where supported by the actual code and tests. It is not a replacement for mature enterprise security products.
 
 ---
 
 ## Table of Contents
 
-- [About](#about)
-- [10-Line Description](#10-line-description)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [CLI Usage](#cli-usage)
-- [Assessment Modules](#assessment-modules)
-- [Examples of Output](#examples-of-output)
-- [Reports](#reports)
-- [Testing](#testing)
-- [Development](#development)
-- [Authorized Use](#authorized-use)
-- [GitHub Publishing](#github-publishing)
-- [AI-Generated Code Verification Checklist](#ai-generated-code-verification-checklist)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [Acknowledgements](#acknowledgements)
-- [License](#license)
+* [About](#about)
+* [Features](#features)
+* [Architecture](#architecture)
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Quick Start](#quick-start)
+* [CLI Commands](#cli-commands)
+* [Assessment Modules](#assessment-modules)
+* [Example Output](#example-output)
+* [Testing](#testing)
+* [Development](#development)
+* [Authorized Use](#authorized-use)
+* [GitHub Publishing](#github-publishing)
+* [Roadmap](#roadmap)
+* [Contributing](#contributing)
+* [License](#license)
 
 ---
 
 ## About
 
-Cybora is built around a simple idea:
+Cybora aims to simplify defensive security assessment by bringing multiple checks into a single CLI.
 
-**Do not make users run ten unrelated security tools and manually interpret the results.**
-
-Instead:
+Instead of running unrelated tools and manually combining their output, Cybora provides a common interface for supported assessment modules.
 
 ```text
-Target
-  |
-  +--> Web assessment
-  +--> Repository assessment
-  +--> Dependency assessment
-  +--> Local system assessment
-  +--> Network exposure assessment
-  |
-  v
-Normalized Findings
-  |
-  v
-Risk Correlation
-  |
-  v
-Prioritized Security Report
+                  CYBORA CLI
+                      |
+              Assessment Runner
+                      |
+          +-----------+-----------+
+          |           |           |
+         Web         Repo        Deps
+          |           |           |
+        System      Network       |
+          |           |           |
+          +-----------+-----------+
+                      |
+               Security Findings
+                      |
+                Risk Assessment
+                      |
+                  Final Report
 ```
 
-The platform is local-first. It does not require a paid cloud account or an AI API to perform the foundation assessments.
-
----
-
-## 10-Line Description
-
-Cybora is a free, modular cybersecurity assessment platform built for everyone.  
-It brings multiple defensive security checks into one simple CLI.  
-Assess websites, repositories, dependencies, local systems, and network exposure.  
-Every module produces the same normalized finding format.  
-A risk engine prioritizes findings instead of dumping raw scanner output.  
-Reports can be exported as JSON for automation and further analysis.  
-The architecture is designed for future cloud, container, API, identity, and compliance modules.  
-It is local-first, transparent, and designed to keep sensitive assessment data on the user's machine.  
-Safety controls emphasize authorized, non-destructive assessment.  
-The long-term goal is a free open security-assessment ecosystem rather than another single-purpose scanner.
+Cybora is designed for local-first use. Its foundation package does not require a paid cloud account or an AI API.
 
 ---
 
 ## Features
 
-### Implemented in this foundation release
+Cybora `0.1.0` provides the following command groups, subject to verification against the actual source code:
 
-- Website security baseline assessment
-  - HTTPS/TLS availability
-  - Security headers
-  - Cookie flags
-  - Server disclosure
-  - Redirect behavior
-  - Basic technology/header observations
-- Repository assessment
-  - Common hard-coded secret patterns
-  - Dangerous code-pattern indicators
-  - Risky file names
-  - Large/binary-file inventory
-- Dependency assessment
-  - Python `requirements.txt` / `pyproject.toml` inventory
-  - Unpinned dependency detection
-  - Basic dependency hygiene findings
-- Local system assessment
-  - OS/platform information
-  - Python/runtime information
-  - Environment safety observations
-  - Writable working-directory checks
-- Local network exposure assessment
-  - Explicitly limited to `127.0.0.1` / `localhost` by default
-  - Safe connection checks against common local development ports
-- Unified severity model
-  - Critical / High / Medium / Low / Info
-- Deterministic risk scoring
-- JSON report export
-- Human-readable terminal reports
-- Test suite with `pytest`
-- Code quality configuration with Ruff
-- CI workflow for automated tests
-- Clear authorization/safety boundary
+* **Web:** Non-destructive website baseline assessment.
+* **Repo:** Local repository inspection for common accidental secrets and risky patterns.
+* **Deps:** Dependency pinning and source-hygiene assessment.
+* **System:** Local system assessment without privileged changes.
+* **Network:** Checks common service ports on loopback.
+* **Assess:** Combines supported defensive assessments into a report.
+* **Demo:** Demonstrates the reporting workflow using sample data.
 
-### Planned advanced modules
+### Planned capabilities
 
-- Attack-surface inventory
-- DNS/subdomain inventory for explicitly authorized domains
-- API inventory and passive API assessment
-- Container/Docker assessment
-- IaC assessment for Terraform/Kubernetes
-- Cloud posture assessment
-- SBOM generation and dependency intelligence
-- CVE/KEV/EPSS enrichment
-- Attack-path graphing
-- Historical posture comparison
-- Compliance mapping
-- Web dashboard
-- Plugin/module SDK
-- Continuous monitoring
-- SARIF/HTML/PDF reporting
-- Optional local AI explanation layer
-- Enterprise RBAC and team workspaces
+* Vulnerability intelligence and CVE enrichment
+* Software Bill of Materials (SBOM)
+* Container and cloud assessments
+* API and infrastructure-as-code assessment
+* Historical security posture comparisons
+* HTML and SARIF reports
+* Web dashboard and plugin SDK
+* Compliance mappings and finding correlation
+
+These are roadmap items, not promises that they are available in the current release.
 
 ---
 
 ## Architecture
 
-Cybora uses a modular pipeline:
+Cybora is organized around a common assessment workflow:
 
-```text
-                 +-------------------+
-                 |      CLI          |
-                 +---------+---------+
-                           |
-                 +---------v---------+
-                 | Assessment Runner |
-                 +---------+---------+
-                           |
-       +-------------------+-------------------+
-       |          |          |        |        |
-       v          v          v        v        v
-     Web        Repo       Deps     System   Network
-       |          |          |        |        |
-       +----------+----------+--------+--------+
-                           |
-                 +---------v---------+
-                 | Finding Normalizer|
-                 +---------+---------+
-                           |
-                 +---------v---------+
-                 |   Risk Engine     |
-                 +---------+---------+
-                           |
-                 +---------v---------+
-                 | Report Generator  |
-                 +-------------------+
-```
+1. Accept a target or local assessment scope.
+2. Run the selected assessment modules.
+3. Normalize module findings.
+4. Apply available risk-scoring logic.
+5. Present findings and supported report formats.
 
-The important design decision is the **normalized finding model**. Every module emits the same structure, creating a consistent base for future correlation and attack-path analysis across assessment types.
-
----
-
-## Project Structure
-
-```text
-cybora/
-├── README.md
-├── LICENSE
-├── REQUIREMENTS.txt
-├── pyproject.toml
-├── .gitignore
-├── .env.example
-├── .github/
-│   └── workflows/
-│       └── tests.yml
-├── src/
-│   └── cybora/
-│       ├── __init__.py
-│       ├── __main__.py
-│       ├── cli.py
-│       ├── models.py
-│       ├── runner.py
-│       ├── risk.py
-│       ├── reporting.py
-│       └── modules/
-│           ├── __init__.py
-│           ├── web.py
-│           ├── repo.py
-│           ├── dependencies.py
-│           ├── system.py
-│           └── network.py
-└── tests/
-    ├── test_risk.py
-    ├── test_repo.py
-    ├── test_dependencies.py
-    └── test_cli.py
-```
+The CLI and module implementations define the actual capabilities of the current release.
 
 ---
 
 ## Requirements
 
-- Python **3.14.4** is the intended target runtime. Validate in a clean Python 3.14.4 environment before publishing a release.
-- Python 3.14 is the target runtime for this repository.
-- A virtual environment is strongly recommended.
-- Internet access is required only for website assessment targets.
-- The foundation release does not require Nmap, Docker, a cloud account, or an AI API.
+* Python 3.14 or a compatible supported Python version.
+* `pip` for installing the package.
+* Internet access for website assessments.
+* A virtual environment is recommended for development.
 
-Use a currently supported Python 3.14.x maintenance release when possible; if you stay on 3.14.4, keep the environment isolated and run the full test suite.
+Use the Python version and dependencies specified in the project's packaging configuration.
 
 ---
 
 ## Installation
 
-### Windows PowerShell
+### Install from PyPI
+
+Install Cybora using pip:
 
 ```powershell
-git clone https://github.com/YOUR_USERNAME/cybora.git
-cd cybora
+python -m pip install cybora
+```
 
+Check the installed version:
+
+```powershell
+python -m cybora --version
+```
+
+Display available commands:
+
+```powershell
+python -m cybora --help
+```
+
+### Install from source
+
+Clone the repository:
+
+```powershell
+git clone https://github.com/HK-Cyber-enthusiast/cybora.git
+cd cybora
+```
+
+Create and activate a virtual environment:
+
+```powershell
 py -3.14 -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
 
+Install the project:
+
+```powershell
 python -m pip install --upgrade pip
-python -m pip install -r REQUIREMENTS.txt
 python -m pip install -e .
 ```
 
@@ -258,507 +173,307 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
 ```
 
-### Windows Command Prompt
+Verify the installation:
 
-```cmd
-git clone https://github.com/YOUR_USERNAME/cybora.git
-cd cybora
-
-py -3.14 -m venv .venv
-.venv\Scripts\activate.bat
-
-python -m pip install --upgrade pip
-python -m pip install -r REQUIREMENTS.txt
-python -m pip install -e .
-```
-
-### Linux/macOS
-
-```bash
-git clone https://github.com/YOUR_USERNAME/cybora.git
-cd cybora
-
-python3.14 -m venv .venv
-source .venv/bin/activate
-
-python -m pip install --upgrade pip
-python -m pip install -r REQUIREMENTS.txt
-python -m pip install -e .
+```powershell
+python -m cybora --help
+python -m cybora demo
 ```
 
 ---
 
 ## Quick Start
 
-Check the CLI:
+### 1. Check the version
 
-```bash
-cybora --help
+```powershell
+python -m cybora --version
 ```
 
-Run a local demo:
+### 2. View available commands
 
-```bash
-cybora demo
+```powershell
+python -m cybora --help
 ```
 
-Assess a website you own or are authorized to test:
+### 3. Run the demo
 
-```bash
-cybora web https://example.com
+```powershell
+python -m cybora demo
 ```
 
-Assess a repository:
+The demo uses sample data and does not represent a real security assessment.
 
-```bash
-cybora repo .
+### 4. Inspect a repository
+
+```powershell
+python -m cybora repo .
 ```
 
-Assess a dependency file:
+Review the findings before publishing code.
 
-```bash
-cybora deps REQUIREMENTS.txt
+### 5. Review dependencies
+
+```powershell
+python -m cybora deps REQUIREMENTS.txt
 ```
 
-Assess the current local machine:
+Use the actual dependency-file path in your project.
 
-```bash
-cybora system
+### 6. Assess a website
+
+```powershell
+python -m cybora web https://example.com
 ```
 
-Check common local development ports only:
+Only assess websites you own or are authorized to test.
 
-```bash
-cybora network
+### 7. Assess your local system
+
+```powershell
+python -m cybora system
 ```
 
-Run several defensive assessments and create one JSON report:
+### 8. Check local network exposure
 
-```bash
-cybora assess --web https://example.com --repo . --deps REQUIREMENTS.txt --system --network --output report.json
+```powershell
+python -m cybora network
 ```
+
+The foundation release is intended to limit these checks to loopback addresses such as `127.0.0.1` and `localhost`.
 
 ---
 
-## CLI Usage
+## CLI Commands
 
-### Show version
-
-```bash
-cybora --version
-```
-
-### Website
-
-```bash
-cybora web https://example.com
-```
-
-The web module performs non-destructive baseline checks. It does not attempt exploitation.
-
-### Repository
-
-```bash
-cybora repo .
-```
-
-Use it before publishing a repository to look for common accidental secrets and risky patterns.
-
-### Dependencies
-
-```bash
-cybora deps REQUIREMENTS.txt
-```
-
-### System
-
-```bash
-cybora system
-```
-
-### Local network
-
-```bash
-cybora network
-```
-
-The network module intentionally checks only loopback services in the foundation release.
+| Command                                    | Purpose                       |
+| ------------------------------------------ | ----------------------------- |
+| `python -m cybora --help`                  | Display available commands    |
+| `python -m cybora --version`               | Display the installed version |
+| `python -m cybora demo`                    | Run the sample demonstration  |
+| `python -m cybora web https://example.com` | Assess a website baseline     |
+| `python -m cybora repo .`                  | Inspect a local repository    |
+| `python -m cybora deps REQUIREMENTS.txt`   | Review dependency hygiene     |
+| `python -m cybora system`                  | Assess the local system       |
+| `python -m cybora network`                 | Check local service exposure  |
 
 ### Combined assessment
 
-```bash
-cybora assess \
-  --web https://example.com \
-  --repo . \
-  --deps REQUIREMENTS.txt \
-  --system \
-  --network \
-  --output cybora-report.json
-```
-
-On Windows PowerShell, the same command can be written on one line:
+If supported by the installed version, a combined assessment may look like this:
 
 ```powershell
-cybora assess --web https://example.com --repo . --deps REQUIREMENTS.txt --system --network --output cybora-report.json
+python -m cybora assess --web https://example.com --repo . --deps REQUIREMENTS.txt --system --network --output report.json
 ```
+
+Check `python -m cybora assess --help` to confirm the available options.
 
 ---
 
 ## Assessment Modules
 
-| Module | Current scope | Safety |
-|---|---|---|
-| `web` | HTTPS, headers, cookies, redirects, disclosure | Read-only/non-destructive |
-| `repo` | Secrets/patterns/files | Local analysis |
-| `deps` | Dependency hygiene | Local analysis |
-| `system` | Local runtime/security observations | Local only |
-| `network` | Loopback service exposure | Local only |
-| Future `cloud` | Cloud posture | Explicit credentials/scope |
-| Future `api` | API inventory/passive checks | Authorized targets only |
-| Future `container` | Docker/image configuration | Local analysis |
-| Future `compliance` | Framework mappings | Evidence-based |
+| Module    | Purpose                    | Scope                  |
+| --------- | -------------------------- | ---------------------- |
+| `demo`    | Demonstration findings     | Sample data            |
+| `web`     | Website baseline checks    | Authorized website     |
+| `repo`    | Repository inspection      | Local files            |
+| `deps`    | Dependency hygiene         | Local dependency files |
+| `system`  | System observations        | Local machine          |
+| `network` | Common service-port checks | Loopback only          |
+| `assess`  | Combined assessment        | Supported modules      |
+
+Cybora does not claim that baseline checks identify every vulnerability in a target.
 
 ---
 
-## Examples of Output
+## Example Output
 
-Example terminal output:
+Run the demo:
 
-```text
-CYBORA SECURITY ASSESSMENT
-
-Target: repository
-Findings: 4
-Risk score: 62/100
-
-HIGH    Possible hard-coded credential
-        File: config/settings.py
-        Evidence: API_KEY assignment pattern
-
-MEDIUM  Unpinned dependency
-        File: requirements.txt
-        Evidence: requests
-
-LOW     Risky file name
-        File: .env.example
-
-INFO    Large binary file
-        File: assets/demo.bin
-
-Priority:
-1. Review and rotate any real credential.
-2. Pin dependencies and review lock/update policy.
-3. Keep secrets out of source control.
+```powershell
+python -m cybora demo
 ```
 
-Example JSON structure:
+Illustrative JSON output:
 
 ```json
 {
   "tool": "cybora",
   "version": "0.1.0",
-  "risk_score": 62,
-  "summary": {
-    "critical": 0,
-    "high": 1,
-    "medium": 1,
-    "low": 1,
-    "info": 1
-  },
-  "findings": []
+  "findings": [
+    {
+      "module": "demo",
+      "title": "Sample medium-risk finding",
+      "severity": "medium",
+      "description": "This is a demonstration finding.",
+      "target": "demo://local",
+      "remediation": "Replace the demo with a real authorized assessment."
+    }
+  ]
 }
 ```
 
----
-
-## Reports
-
-JSON reports are intentionally machine-readable.
-
-This enables future integrations with:
-
-- CI/CD
-- GitHub Actions
-- dashboards
-- SIEM pipelines
-- ticketing systems
-- compliance evidence workflows
-
-Do not upload reports containing secrets or sensitive infrastructure details to public repositories.
+This is illustrative output only. Actual output depends on the installed implementation.
 
 ---
 
 ## Testing
 
-Install development dependencies from `REQUIREMENTS.txt`, then:
+Run these commands from the project directory.
 
-```bash
-pytest -q
-```
+### Check dependencies
 
-Run with coverage:
-
-```bash
-pytest --cov=cybora --cov-report=term-missing
-```
-
-Run linting:
-
-```bash
-ruff check .
-```
-
-Format/check:
-
-```bash
-ruff format --check .
-```
-
-Before a GitHub release, run:
-
-```bash
+```powershell
 python -m pip check
-pytest -q
-ruff check .
-ruff format --check .
 ```
+
+### Check the Python import
+
+```powershell
+python -c "import cybora; print('Cybora Python import works')"
+```
+
+### Check the CLI
+
+```powershell
+python -m cybora --help
+python -m cybora --version
+python -m cybora demo
+```
+
+### Run tests
+
+If pytest and the project's tests are installed:
+
+```powershell
+python -m pytest -q
+```
+
+### Run Ruff checks
+
+If Ruff is installed:
+
+```powershell
+python -m ruff check .
+python -m ruff format --check .
+```
+
+Do not claim the tests pass until you have run them and confirmed the results.
 
 ---
 
 ## Development
 
-Editable installation:
+Install the local project in editable mode:
 
-```bash
+```powershell
 python -m pip install -e .
 ```
 
-Run without installing the CLI entry point:
+When contributing a new assessment module:
 
-```bash
-python -m cybora --help
-```
-
-Add a module by:
-
-1. Creating `src/cybora/modules/<name>.py`.
-2. Returning `Finding` objects.
-3. Registering the module in the runner/CLI.
-4. Adding tests.
-5. Documenting it in README.
-6. Adding any new dependency to `REQUIREMENTS.txt`.
-7. Running the full verification commands.
+1. Follow the existing module structure.
+2. Use the project's finding model.
+3. Add tests for new behavior.
+4. Document the module's scope and limitations.
+5. Update dependency files when adding packages.
+6. Run the relevant tests and quality checks.
 
 ---
 
 ## Authorized Use
 
-Cybora is intended for defensive security assessment.
+Cybora is intended for lawful, defensive security assessment.
 
 Only assess:
 
-- systems you own;
-- systems where you have explicit permission;
-- intentionally provided security-testing targets;
-- local systems and repositories you are authorized to inspect.
+* Systems you own.
+* Systems for which you have explicit authorization.
+* Local repositories and machines you are permitted to inspect.
+* Intentionally provided security-testing targets.
 
-Do not use the tool to scan third-party infrastructure without authorization.
+Do not scan or test third-party systems without authorization.
 
-The foundation release deliberately avoids exploit delivery, credential attacks, destructive actions, persistence, stealth, or automated intrusion.
+Always review assessment scope, network behavior, and findings before taking action.
 
 ---
 
 ## GitHub Publishing
 
-### 1. Create the repository
+**GitHub repository:**
+https://github.com/HK-Cyber-enthusiast/cybora
 
-On GitHub:
+To publish README changes, open PowerShell in your local Cybora project directory.
 
-1. Sign in.
-2. Select **New repository**.
-3. Name it `cybora`.
-4. Choose Public if you want the project open source.
-5. Do not create a second README if this project already contains one.
-6. Do not commit secrets.
+Check the working tree:
 
-### 2. Initialize Git
-
-```bash
-git init
-git branch -M main
-git add .
-git commit -m "Initial Cybora foundation release"
+```powershell
+git status
 ```
 
-### 3. Connect GitHub
+Stage the README:
 
-Replace `YOUR_USERNAME`:
+```powershell
+git add README.md
+```
 
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/cybora.git
+Commit the change:
+
+```powershell
+git commit -m "Update Cybora README documentation"
+```
+
+Push changes:
+
+```powershell
+git push
+```
+
+If this is your first push and the remote has not been configured, run:
+
+```powershell
+git remote add origin https://github.com/HK-Cyber-enthusiast/cybora.git
+git branch -M main
 git push -u origin main
 ```
 
-### 4. Verify the public repository
+If `origin` already exists, do not add it again.
 
-Check:
-
-- README renders correctly.
-- License appears on GitHub.
-- No `.venv` folder was committed.
-- No `.env` file was committed.
-- No API keys/passwords/tokens are present.
-- Tests pass.
-- GitHub Actions passes.
-- Installation commands match `REQUIREMENTS.txt`.
-- README commands match the actual CLI.
-- Every advertised feature is actually implemented.
-
-### 5. Recommended repository settings
-
-Enable:
-
-- Issues
-- Discussions (optional)
-- Dependabot
-- Secret scanning where available
-- Code scanning where available
-- Branch protection for `main`
-- Pull request reviews once contributors join
-
----
-
-## AI-Generated Code Verification Checklist
-
-Because this project was generated with AI assistance, **do not publish it blindly**.
-
-### Dependency checks
-
-```bash
-python -m pip check
-python -m pip list
-```
-
-Confirm that every third-party package used by the code is present in `REQUIREMENTS.txt`.
-
-### Import checks
-
-```bash
-python -c "import cybora; print(cybora.__version__)"
-```
-
-### CLI checks
-
-```bash
-cybora --help
-cybora --version
-cybora demo
-```
-
-### Test checks
-
-```bash
-pytest -q
-```
-
-### Static quality
-
-```bash
-ruff check .
-ruff format --check .
-```
-
-### Security review
-
-Manually inspect:
-
-- subprocess calls
-- filesystem writes
-- network requests
-- URL handling
-- redirects
-- certificate verification
-- user-controlled file paths
-- report generation
-- logging
-- exception handling
-- secret handling
-- dependency versions
-
-### Functional consistency
-
-Cross-check:
-
-1. README commands against `cli.py`.
-2. Module names against `modules/`.
-3. Dependency names against imports.
-4. Version numbers against `pyproject.toml`.
-5. CLI examples against actual output.
-6. Tests against implemented behavior.
-7. License text against your intended license.
-8. GitHub Actions Python version against supported runtime.
-9. Roadmap items are not described as implemented.
-10. Security claims are not stronger than the tests/evidence.
+Before publishing, check that you have not committed passwords, API keys, access tokens, private reports, or other sensitive files.
 
 ---
 
 ## Roadmap
 
-### Phase 1 — Foundation
+### Foundation
 
-- [x] Unified finding model
-- [x] CLI
-- [x] Web baseline
-- [x] Repository analysis
-- [x] Dependency hygiene
-- [x] Local system assessment
-- [x] Local network exposure
-- [x] Risk scoring
-- [x] JSON reporting
-- [x] Tests
-- [x] CI
+* [x] CLI entry point
+* [x] Package publication on PyPI
+* [ ] Verify every assessment module with automated tests
+* [ ] Confirm README examples against the installed CLI
+* [ ] Validate the GitHub Actions workflow
 
-### Phase 2 — Security Intelligence
+### Security Intelligence
 
-- [ ] CVE enrichment
-- [ ] CISA KEV enrichment
-- [ ] EPSS enrichment
-- [ ] Technology fingerprinting
-- [ ] Asset inventory
-- [ ] SBOM
-- [ ] SARIF
-- [ ] HTML report
+* [ ] CVE and vulnerability intelligence
+* [ ] CISA KEV and EPSS enrichment
+* [ ] SBOM generation
+* [ ] Additional report formats
 
-### Phase 3 — Advanced Assessment
+### Advanced Assessment
 
-- [ ] API assessment
-- [ ] Container assessment
-- [ ] Kubernetes assessment
-- [ ] Terraform/IaC assessment
-- [ ] Cloud posture
-- [ ] Identity assessment
-- [ ] Authentication/security-control review
-- [ ] Compliance mappings
+* [ ] API assessment
+* [ ] Container and infrastructure-as-code assessment
+* [ ] Cloud security posture
+* [ ] Compliance mappings
 
-### Phase 4 — Correlation
+### Platform
 
-- [ ] Finding deduplication
-- [ ] Asset graph
-- [ ] Attack-path graph
-- [ ] Business-impact scoring
-- [ ] Historical posture
-- [ ] Remediation prioritization
+* [ ] Web dashboard
+* [ ] Plugin SDK
+* [ ] Historical posture tracking
+* [ ] Additional CI/CD integrations
 
-### Phase 5 — Platform
-
-- [ ] Web dashboard
-- [ ] Plugin SDK
-- [ ] CI/CD integrations
-- [ ] Team workspaces
-- [ ] RBAC
-- [ ] Continuous monitoring
-- [ ] Local AI assistant
-- [ ] Enterprise deployment options
+Roadmap items should be marked complete only after implementation and verification.
 
 ---
 
@@ -766,45 +481,31 @@ Cross-check:
 
 Contributions are welcome.
 
-Good first contributions include:
+Useful contributions include:
 
-- tests
-- documentation
-- new safe assessment modules
-- parsers
-- report formats
-- platform compatibility fixes
-- performance improvements
+* Bug fixes and automated tests
+* Documentation improvements
+* Defensive assessment modules
+* Report-format improvements
+* Python compatibility fixes
+* Performance improvements
 
-For new security modules, contributors should clearly document:
-
-- scope
-- permissions required
-- network behavior
-- data collected
-- safety controls
-- expected false positives
-- tests
-- limitations
-
-Please never submit code that performs unauthorized access, destructive actions, credential theft, persistence, or evasion.
+New security modules should document their scope, permissions, network behavior, collected data, safety controls, expected false positives, and limitations.
 
 ---
 
 ## Acknowledgements
 
-Cybora is built using the Python ecosystem and open security knowledge.
+Cybora uses the Python ecosystem and open security knowledge to support defensive security assessment.
 
-The project is designed to complement—not replace—mature tools and standards such as OWASP guidance, NIST publications, CVE/NVD data, CISA KEV, EPSS, SARIF, and established security testing methodologies.
+It is intended to complement established security tools and guidance, not replace them.
 
 ---
 
 ## License
 
-Cybora is released under the MIT License. See [LICENSE](LICENSE).
+Cybora is released under the MIT License. See [LICENSE](LICENSE) for the full license text.
 
 ---
 
-## Name Note
-
-The project name **Cybora** is a working name. This is **not** a trademark or legal availability guarantee. Before public branding, verify the name through GitHub, PyPI, package registries, domains, social platforms, and relevant trademark databases.
+**Cybora 0.1.0 — An early foundation for modular defensive security assessment.**
