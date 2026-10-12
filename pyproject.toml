@@ -39,3 +39,10 @@ extend-exclude = ["pytest-temp"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.11",
+]
