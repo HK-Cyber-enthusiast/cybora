@@ -15,7 +15,7 @@ reports/
 Thumbs.db
 .vscode/
 .idea/
-
+.pytest-tmp/
 .pytest-temp/
 
 pytest-temp/
