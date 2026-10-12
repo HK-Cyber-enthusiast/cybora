@@ -17,4 +17,7 @@ def test_empty_risk_is_zero():
 
 
 def test_risk_is_capped():
-    assert calculate_risk([make(Severity.CRITICAL), make(Severity.CRITICAL), make(Severity.HIGH)]) == 100
+    assert (
+        calculate_risk([make(Severity.CRITICAL), make(Severity.CRITICAL), make(Severity.HIGH)])
+        == 100
+    )

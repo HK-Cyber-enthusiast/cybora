@@ -23,7 +23,9 @@ def scan(path: str) -> list[Finding]:
         ]
 
     findings = []
-    for line_no, raw in enumerate(file.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+    for line_no, raw in enumerate(
+        file.read_text(encoding="utf-8", errors="ignore").splitlines(), 1
+    ):
         line = raw.strip()
         if not line or line.startswith("#") or line.startswith("-"):
             continue

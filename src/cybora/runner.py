@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from . import __version__
 from .models import AssessmentResult, Finding
 from .risk import calculate_risk
-from . import __version__
 
 
 def build_result(target: str, findings: list[Finding]) -> AssessmentResult:

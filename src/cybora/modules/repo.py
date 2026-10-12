@@ -7,9 +7,15 @@ from ..models import Finding, Severity
 
 SECRET_PATTERNS = [
     ("AWS access key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
-    ("Generic API key assignment", re.compile(r"(?i)\b(api[_-]?key|secret[_-]?key)\s*[:=]\s*['\"][^'\"]{12,}['\"]")),
+    (
+        "Generic API key assignment",
+        re.compile(r"(?i)\b(api[_-]?key|secret[_-]?key)\s*[:=]\s*['\"][^'\"]{12,}['\"]"),
+    ),
     ("Private key marker", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----")),
-    ("Generic password assignment", re.compile(r"(?i)\b(password|passwd|pwd)\s*[:=]\s*['\"][^'\"]{8,}['\"]")),
+    (
+        "Generic password assignment",
+        re.compile(r"(?i)\b(password|passwd|pwd)\s*[:=]\s*['\"][^'\"]{8,}['\"]"),
+    ),
 ]
 
 RISKY_NAMES = {".env", "id_rsa", "id_ed25519", "credentials.json", "secrets.json"}
@@ -58,7 +64,19 @@ def scan(path: str) -> list[Finding]:
                 )
             )
 
-        if file.suffix.lower() not in {".py", ".js", ".ts", ".json", ".yaml", ".yml", ".toml", ".ini", ".env", ".txt", ".md"}:
+        if file.suffix.lower() not in {
+            ".py",
+            ".js",
+            ".ts",
+            ".json",
+            ".yaml",
+            ".yml",
+            ".toml",
+            ".ini",
+            ".env",
+            ".txt",
+            ".md",
+        }:
             continue
 
         try:

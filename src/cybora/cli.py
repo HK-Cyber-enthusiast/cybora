@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Optional
 
 import typer
 from rich.console import Console
 
 from . import __version__
-from .modules import dependencies, network, repo as repo_module, system, web as web_module
+from .modules import dependencies, network, system
+from .modules import repo as repo_module
+from .modules import web as web_module
 from .reporting import print_result, write_json
 from .runner import build_result
 
@@ -22,7 +23,7 @@ console = Console()
 
 @app.callback()
 def main(
-    version: Optional[bool] = typer.Option(
+    version: bool | None = typer.Option(
         None, "--version", callback=lambda value: _version_callback(value), is_eager=True
     ),
 ):
@@ -59,7 +60,6 @@ def web(target: str):
     print_result(result)
 
 
-
 @app.command()
 def repo(target: str = typer.Argument(".", help="Repository directory.")):
     """Scan a local repository for common accidental secrets and risky patterns."""
@@ -90,12 +90,14 @@ def network_assess():
 
 @app.command()
 def assess(
-    web_target: Optional[str] = typer.Option(None, "--web", help="Authorized HTTP(S) target."),
-    repo_target: Optional[str] = typer.Option(None, "--repo", help="Local repository."),
-    deps_target: Optional[str] = typer.Option(None, "--deps", help="Dependency file."),
+    web_target: str | None = typer.Option(None, "--web", help="Authorized HTTP(S) target."),
+    repo_target: str | None = typer.Option(None, "--repo", help="Local repository."),
+    deps_target: str | None = typer.Option(None, "--deps", help="Dependency file."),
     system_check: bool = typer.Option(False, "--system", help="Include local system assessment."),
-    network_check: bool = typer.Option(False, "--network", help="Include loopback network assessment."),
-    output: Optional[str] = typer.Option(None, "--output", help="Write JSON report to this path."),
+    network_check: bool = typer.Option(
+        False, "--network", help="Include loopback network assessment."
+    ),
+    output: str | None = typer.Option(None, "--output", help="Write JSON report to this path."),
 ):
     """Run multiple defensive assessments and combine findings into one report."""
     findings = []
