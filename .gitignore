@@ -17,3 +17,5 @@ Thumbs.db
 .idea/
 
 .pytest-temp/
+
+pytest-temp/
